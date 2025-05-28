@@ -155,8 +155,9 @@
                 <ul class="nav nav-pills nav-fill p-1" role="tablist">
                   <li class="nav-item">
                     <a class="nav-link mb-0 px-0 py-1 active d-flex align-items-center justify-content-center " data-bs-toggle="tab" href="javascript:;" role="tab" aria-selected="true">
-                      <i class="ni ni-app"></i>
-                      <span class="ms-2">App</span>
+                      {% for message in messages %}
+                      <span class="badge bg-gradient-info"> {{ message }}</span>
+                      {% endfor %}
                     </a>
                   </li>
                   <li class="nav-item">
