@@ -129,6 +129,10 @@
         <div class="col-12">
           <div class="card mb-4">
             <div class="card-header pb-0">
+              <div class="d-flex align-items-center">
+                <h6 class="mb-0">Lista de Perfiles</h6>
+                <a class="btn btn-danger btn-sm ms-auto" href="{% url 'report-general' %}">Exportar</a>
+              </div>
               <h6>Authors table</h6>
             </div>
             <div class="card-body px-0 pt-0 pb-2">
@@ -168,31 +172,49 @@
                         <span class="text-secondary text-xs font-weight-bold">23/04/18</span>
                       </td>
                       <td class="align-middle">
-                        <a href="javascript:;" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
-                          Edit
+                        <a href="{% url 'edit_profile' profiles.id %}" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
+                          Editar usuario
                         </a>
                       </td>
                       <td class="align-middle">
-                        <a href="javascript:;" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
-                          Edit
+                        <a href="{% url 'delete_profile' profiles.id %}" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Delete user">
+                          Eliminar usuario
                         </a>
                       </td>
+                      {% empty %}
+                      <td colspant="5"> No se encontraron perfiles que coincidan con la búsqueda.</td>
                     </tr>
                     {% endfor %}
                   </tbody>
                 </table>
+                <!--PAGINADOR TABLA USUARIOS-->
+                <div class="pagination d-flex justify-content-end">
+                  <span class="step-links">
+                    {% if profiles.has_previous %}
+                      <a class="btn btn-sm btn-rounded btn-primary" href="?page=1"><i class="ni ni-bold-up"></i></a>
+                      <a class="btn btn-sm btn-rounded btn-primary" href="?page={{ profiles.previous_page_number }}"><i class="ni ni-bold-left"></i></a>
+                    {% endif %}
+  
+                    {% if profiles.has_next %}
+                      <a class="btn btn-sm btn-rounded btn-primary" href="?page={{ profiles.next_page_number }}"><i class="ni ni-bold-right"></i></a>
+                      <a class="btn btn-sm btn-rounded btn-primary" href="?page={{ profiles.paginator.num_pages }}"><i class="ni ni-bold-down"></i></a>
+                    {% endif %}
+                      <a class="btn btn-sm btn-rounded btn-primary">Páginas {{ profiles.number }} de {{ profiles.paginator.num_pages }}</a>
+                  </span>
+                </div>
+
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <form action="{% url 'tables' %}" method="GET">
+      {% comment %} <form action="{% url 'tables' %}" method="GET">
         <div class="input-group">
           <span class="input-group-text text-body"><i class="fas fa-search" aria-hidden="true"></i></span>
           <input name="filter2" type="text" class="form-control" placeholder="Buscar...">
         </div>
-      </form>
+      </form> {% endcomment %}
 
       <div class="row">
         <div class="col-12">
@@ -252,6 +274,22 @@
                     
                   </tbody>
                 </table>
+
+                <div class="pagination d-flex justify-content-end">
+                  <span class="step-links">
+                    {% if bitacoras.has_previous %}
+                      <a class="btn btn-sm btn-rounded btn-primary" href="?page=1"><i class="ni ni-bold-up"></i></a>
+                      <a class="btn btn-sm btn-rounded btn-primary" href="?page={{ bitacoras.previous_page_number }}"><i class="ni ni-bold-left"></i></a>
+                    {% endif %}
+  
+                    {% if bitacoras.has_next %}
+                      <a class="btn btn-sm btn-rounded btn-primary" href="?page={{ bitacoras.next_page_number }}"><i class="ni ni-bold-right"></i></a>
+                      <a class="btn btn-sm btn-rounded btn-primary" href="?page={{ bitacoras.paginator2.num_pages }}"><i class="ni ni-bold-down"></i></a>
+                    {% endif %}
+                      <a class="btn btn-sm btn-rounded btn-primary">Páginas {{ bitacoras.number }} de {{ bitacoras.paginator.num_pages }}</a>
+                  </span>
+                </div>
+
               </div>
             </div>
           </div>

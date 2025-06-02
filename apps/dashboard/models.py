@@ -13,8 +13,7 @@ class Profile(models.Model):
 
 class Bitacora(models.Model):
     id = models.AutoField(primary_key=True)
-    movimiento = models.CharField(max_length=50)
-    fecha = models.DateField(default=timezone.now)
+    movimiento = models.CharField(max_length=150)
+    fecha = models.DateTimeField(default=timezone.now)
     class Meta:
         db_table='bitacora'
-
