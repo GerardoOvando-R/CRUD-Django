@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Profile , Bitacora
+from .models import Profile , Bitacora, User
 from .forms import ProfileForm
 from django.contrib import messages
 
@@ -10,21 +10,99 @@ from openpyxl import Workbook
 from django.http import HttpResponse
 from django.utils import timezone
 
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth.decorators import login_required
+
 # Create your views here.
 
-def signin(request):
-    return render(request, 'sign-in.html')
 
+def signin(request):
+    if request.method == 'GET':
+        return render(request, 'sign-in.html')
+    else:
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+
+        if user is None:
+            Bitacora.objects.create(
+                    user = None,
+                    movimiento=f"Intento de inicio de sesión fallido para el usuario: {username}"
+                )
+            return render(request, 'sign-in.html', {
+                'error_match' : 'Usuario o contraseña son incorrectas'
+            })
+        else:
+            Bitacora.objects.create(
+                    user = user,
+                    movimiento=f"Inicio de sesión exitoso para el usuario: {username}"
+                )
+            login(request,user)
+            return redirect('profile')
+#Cerrar sesión
+def close(request):
+    if request.user.is_authenticated:
+        username = request.user.username
+
+    Bitacora.objects.create(
+        user= request,
+        movimiento= f'Cierra sesión: {username}'
+    )
+
+    logout(request)
+    return redirect('sigin')
+
+#Resitrar usuarios
 def signup(request):
-    return render(request, 'sign-up.html')
+    if request.method == 'GET':
+        return render(request, 'sign-up.html')
+    else: 
+        print(request.POST)
+        #Comparación de contraseñas
+        if request.POST['password1'] == request.POST['password2']:
+            #Generar usuario
+            try:
+                user = User.objects.create_user(
+                    username=request.POST['username'], 
+                    password=request.POST['password1']
+                )
+                user.save() #Guardar objesto en db
+                login(request, user) #Guardar sesión
+                
+                Bitacora.objects.create(
+                    user = user,
+                    movimiento=f"Registro exitoso para el usario: {user.username}"
+                )
+
+                return redirect('profile')
+            except:
+                Bitacora.objects.create(
+                    user = None,
+                    movimiento=f"Intento fallido para el usuario: {request.POST['username']}, Usuario ya existente"
+                )
+                return render(request, 'sign-up.html', {
+                    'error_exists' : 'Usuario ya existe'
+                })
+        else:
+            Bitacora.objects.create(
+                    user = None,
+                    movimiento=f"Intento de registro fallido: {request.POST['username']}, Las contraseñas no coinciden"
+                )
+        return render(request, 'sign-up.html', {
+                    'error_match' : 'Las contraseñas no coinciden'
+                })
 
 
 def dashboard(request):
     return render(request, 'dashboard.html')
 
-def tables(request):
-    bitacora_list = Bitacora.objects.all()
-    profile_list = Profile.objects.all()
+@login_required
+def bitacora(request):
+    #profile_list = Profile.objects.filter(estatus1=True, username= 'Gera').order_by('name')
+    profile_list = Profile.objects.all().order_by('estatus1')
+    #filter(estatus1=True).order_by('name')
+    bitacora_list = Bitacora.objects.all().order_by('-fecha')
 
     #Buscador perfiles
     search_query = request.GET.get('filter', '')
@@ -56,11 +134,12 @@ def tables(request):
         'bitacoras': bitacoras,
         'profiles' : profiles,
         'search_query' : search_query,
-        'search_query2' : search_query2
+        'search_query2' : search_query2,
     }
 
-    return render(request, 'tables.html' ,context)
+    return render(request, 'bitacora.html' ,context)
 
+#@login_required
 def profile(request):
     profile = Profile.objects.last() 
 
@@ -121,7 +200,9 @@ def edit_profile(request, profile_id):
 
 def delete_profile(request, profile_id):
     profile = get_object_or_404(Profile, pk=profile_id)
-    profile.delete()
+    profile.estatus1 = False
+    profile.save()
+    #profile.delete()
 
     #Bitacora
     Bitacora.objects.create(
