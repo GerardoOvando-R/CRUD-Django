@@ -4,3 +4,4 @@ argon/__pycache__
 conf
 photos
 db.sqlite3
+.env

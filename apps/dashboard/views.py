@@ -46,12 +46,12 @@ def close(request):
         username = request.user.username
 
     Bitacora.objects.create(
-        user= request,
+        user= request.user,
         movimiento= f'Cierra sesión: {username}'
     )
 
     logout(request)
-    return redirect('sigin')
+    return redirect('signin')
 
 #Resitrar usuarios
 def signup(request):
@@ -141,22 +141,26 @@ def bitacora(request):
 
 #@login_required
 def profile(request):
-    profile = Profile.objects.last() 
-
+    profile = Profile.objects.filter(user=request.user).first() 
+    
     if request.method == 'POST':
         form = ProfileForm(request.POST, request.FILES)
         if form.is_valid():
-            new_profile = form.save(commit=False)
-            print(request.POST, request.FILES)
-            new_profile.save() 
+            if profile is None:
+                new_profile = form.save(commit=False)
+                new_profile.user=request.user
+                print(request.POST, request.FILES)
+                new_profile.save() 
 
-            messages.success(request, f'Se guardó el perfil {new_profile.name}')
+                messages.success(request, f'Se guardó el perfil {new_profile.name}')
 
-            #Bitacora
-            Bitacora.objects.create(
-                movimiento=f"se creo el perfil: {new_profile.name} con phone {new_profile.phone}"
-            )
-        return redirect(to='profile')
+                #Bitacora
+                Bitacora.objects.create(
+                    movimiento=f"se creo el perfil: {new_profile.name} con phone {new_profile.phone}"
+                )
+            else:
+                messages.error(request, 'Ya tienes un perfil creado')
+            return redirect(to='profile')
     else:
         print('No está mostrando los datos')
         form = ProfileForm()
