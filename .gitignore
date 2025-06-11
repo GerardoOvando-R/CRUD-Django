@@ -1,5 +1,7 @@
 apps/dashboard/__pycache__
 apps/dashboard/mitrations/__pycache__
+apps/tasks/__pycache__
+apps/tasks/mitrations/__pycache__
 argon/__pycache__
 conf
 photos

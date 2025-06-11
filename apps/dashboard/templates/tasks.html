@@ -18,7 +18,7 @@
         </nav>
         <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
           <div class="ms-md-auto pe-md-3 d-flex align-items-center">
-            <form action="{% url 'bitacora' %}" method="GET">
+            <form action="{% url 'tasks' %}" method="GET">
               <div class="input-group">
                 <span class="input-group-text text-body"><i class="fas fa-search" aria-hidden="true"></i></span>
                 <input name="filter" type="text" class="form-control" placeholder="Buscar...">
@@ -83,7 +83,7 @@
                           <i class="fa fa-clock me-1"></i>
                           1 day
                         </p>
-                      </div><h1>{{profile_list}}</h1>
+                      </div><h1></h1>
                 <li>
                   <a class="dropdown-item border-radius-md" href="javascript:;">
                     <div class="d-flex py-1">
@@ -144,7 +144,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    {% for task in tasks %}
+                    {% for task in tasks_paginator %}
                     <tr>  
                       <td>
                         <div class="d-flex px-2 py-1">
@@ -169,6 +169,11 @@
                         <span class="badge badge-sm bg-gradient-danger">EN PROCESO</span>
                       </td>
                       {% endif %}
+                      <td class="align-middle text-center text-sm">
+                        <p>
+                          {{task.profile_id}}
+                        </p>
+                      </td>
                       {% comment %} <td class="align-middle">
                         <a href="{% url 'edit_profile' profile.id %}" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
                           Editar usuario
@@ -186,20 +191,20 @@
                   </tbody>
                 </table>
                 <!--PAGINADOR TABLA USUARIOS-->
-                {% comment %} <div class="pagination d-flex justify-content-end">
+                <div class="pagination d-flex justify-content-end">
                   <span class="step-links">
-                    {% if profiles.has_previous %}
+                    {% if tasks_paginator.has_previous %}
                       <a class="btn btn-sm btn-rounded btn-primary" href="?page=1"><i class="ni ni-bold-up"></i></a>
-                      <a class="btn btn-sm btn-rounded btn-primary" href="?page={{ profiles.previous_page_number }}"><i class="ni ni-bold-left"></i></a>
+                      <a class="btn btn-sm btn-rounded btn-primary" href="?page={{ tasks_paginator.previous_page_number }}"><i class="ni ni-bold-left"></i></a>
                     {% endif %}
   
-                    {% if profiles.has_next %}
-                      <a class="btn btn-sm btn-rounded btn-primary" href="?page={{ profiles.next_page_number }}"><i class="ni ni-bold-right"></i></a>
-                      <a class="btn btn-sm btn-rounded btn-primary" href="?page={{ profiles.paginator.num_pages }}"><i class="ni ni-bold-down"></i></a>
+                    {% if tasks_paginator.has_next %}
+                      <a class="btn btn-sm btn-rounded btn-primary" href="?page={{ tasks_paginator.next_page_number }}"><i class="ni ni-bold-right"></i></a>
+                      <a class="btn btn-sm btn-rounded btn-primary" href="?page={{ tasks_paginator.paginator.num_pages }}"><i class="ni ni-bold-down"></i></a>
                     {% endif %}
-                      <a class="btn btn-sm btn-rounded btn-primary">Páginas {{ profiles.number }} de {{ profiles.paginator.num_pages }}</a>
+                      <a class="btn btn-sm btn-rounded btn-primary">Páginas {{ tasks_paginator.number }} de {{ tasks_paginator.paginator.num_pages }}</a>
                   </span>
-                </div> {% endcomment %}
+                </div>
 
               </div>
             </div>
