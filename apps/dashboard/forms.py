@@ -6,4 +6,9 @@ from .models import Profile
 class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ['username', 'name', 'phone', 'email', 'photo'] #Falta añadir ,'photo'
+        fields = ['username', 'name', 'phone', 'email', 'photo']
+
+class EditForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ['username', 'name', 'phone', 'email']

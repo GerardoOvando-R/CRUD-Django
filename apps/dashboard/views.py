@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Profile , Bitacora, User
-from .forms import ProfileForm
+from .forms import ProfileForm, EditForm
 from django.contrib import messages
 
 from django.db.models import Q
@@ -93,7 +93,6 @@ def signup(request):
                     'error_match' : 'Las contraseñas no coinciden'
                 })
 
-
 def dashboard(request):
     return render(request, 'dashboard.html')
 
@@ -139,7 +138,7 @@ def bitacora(request):
 
     return render(request, 'bitacora.html' ,context)
 
-#@login_required
+@login_required
 def profile(request):
     profile = Profile.objects.filter(user=request.user).first() 
     
@@ -171,6 +170,38 @@ def profile(request):
     } 
     return render(request, 'profile.html', context)
 
+def edit(request):
+    profile = Profile.objects.filter(user=request.user).first()
+    return render(request, 'edit.html', {
+        'profile':profile,
+        })
+
+def save(request, id_user):#-> Obtenemos el id por parámetro
+    profile = get_object_or_404(Profile, pk=id_user)# Si existe el id nos crea el objeto profile
+    
+    if request.method == 'POST':# Validando si se manda la información del formulario para actualizar
+        form = EditForm(request.POST, instance=profile)#Guardando los datos que se pasan por el formulario en el form "EditForm"
+        comp = Profile.objects.filter(username=request.POST['username']).first()
+        
+        
+        if form.is_valid() and comp is None:
+            update_profile = form.save(commit=False)
+            update_profile.save()
+            messages.success(request, f'Se actualizó el perfil de manera correcta')
+            return redirect('profile')
+        else:
+            print('entro en el elif')
+            messages.error(request, f'El usuario {comp.username} ya existe, por favor elije otro.')
+            print("no se guardaron los datos desde la validación")
+            return redirect('edit')
+        
+    else:
+        print("erro en el primer if")
+    return redirect('profile')
+    
+def cancel(request):
+    return redirect('profile')
+
 def edit_profile(request, profile_id):
     #Buscar objeto profile
     profile = get_object_or_404(Profile, pk=profile_id)
@@ -199,8 +230,6 @@ def edit_profile(request, profile_id):
         }
 
         return render(request, 'edit-profile.html', context)
-
-
 
 def delete_profile(request, profile_id):
     profile = get_object_or_404(Profile, pk=profile_id)

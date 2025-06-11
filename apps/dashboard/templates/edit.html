@@ -1,9 +1,6 @@
-
-{%extends 'base.html'%}
-{%load static%}
-{%block content%}
-
-
+{% extends "base.html" %}
+{% load static %}
+{% block content%}
 <body class="g-sidenav-show bg-gray-100">
   
   <div class="position-absolute w-100 min-height-300 top-0" style="background-image: url('https://raw.githubusercontent.com/creativetimofficial/public-assets/master/argon-dashboard-pro/assets/img/profile-layout-header.jpg'); background-position-y: 50%;">
@@ -183,73 +180,58 @@
         <div class="row">
           <div class="col-md-8">
             <!--FORMULARIO-->
-            <form action="{% url 'profile' %}" method='POST' class="forms-sample" enctype="multipart/form-data">
+            <form action="{% url 'save' profile.id %}" method='POST' class="forms-sample" enctype="multipart/form-data">
             {%csrf_token%}
               <div class="card">
-                <div class="card-header pb-0">
-                  <div class="d-flex justify-content-end mb-3">
-                    <div class="col-md-5">
-                      {% for message in messages %}
-                      <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        <span class="alert-icon"><i class="ni ni-like-2"></i></span>
-                        <span class="alert-text"><strong>{{message}}</strong></span>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                      </div>
-                      {% endfor %}
-                    </div>
-                    <div class="col-md-3">
-
-                    </div>
-                    <div class="col-md-2">
-                      <button class="btn btn-icon btn-3 btn-primary" type="button">
-                      <span class="btn-inner--icon"><i class="ni ni-settings-gear-65"></i></span>
-                      <span class="btn-inner--text">Enviar datos</span>
-                    </button>
-                    </div>
-                    <div class="col-md-2">
-                      <a class="btn btn-icon btn-3 btn-primary" type="button" href="{% url 'edit' %}">
-                      <span class="btn-inner--icon"><i class="ni ni-settings-gear-65"></i></span>
-                      <span class="btn-inner--text">Editar perfil</span>
-                    </a>
-                    </div>
-                  </div>
-                </div>
                 <div class="card-body">
-                  <p class="text-uppercase text-sm">User Information</p>
+                  <p class="text-uppercase text-sm">Editar perfil</p>
                   <div class="row">
                     <div class="col-md-6">
                       <div class="form-group">
                         <label for="username" class="form-control-label">Username</label>
-                        <input id="username" name='username' class="form-control" type="text" required value={{profile.username}} disabled>
+                        <input id="username" name='username' class="form-control" type="text" requiered value={{profile.username}} {% comment %} disabled {% endcomment %}>
                       </div>
+                      {% for message in messages%}
+                      <div>
+                        <p>{{message}}</p>
+                      </div>
+                      {% endfor %}
                     </div>
                     <div class="col-md-6">
                       <div class="form-group">
                         <label for="email" class="form-control-label">Email </label>
-                        <input id="email" name='email' class="form-control" type="email" required value={{profile.email}} disabled>
+                        <input id="email" name='email' class="form-control" type="email" requiered value={{profile.email}} {% comment %} disabled {% endcomment %}>
                       </div>
                     </div>
                     <div class="col-md-6">
                       <div class="form-group">
                         <label for="name" class="form-control-label">Nombre</label>
-                        <input id="name" name="name" class="form-control" type="text" required value={{profile.name}} disabled>
+                        <input id="name" name="name" class="form-control" type="text" requiered value={{profile.name}} {% comment %} disabled {% endcomment %}>
                       </div>
                     </div>
                     <div class="col-md-6">
                       <div class="form-group">
                         <label for="phone" class="form-control-label">Telefono</label>
-                        <input id="phone" name="phone" class="form-control" type="text" requiered value={{profile.phone}} disabled>
+                        <input id="phone" name="phone" class="form-control" type="text" requiered value={{profile.phone}} {% comment %} disabled {% endcomment %}>
                       </div>
                     </div>
                     <div class="col-md-12">
                       <div class="form-group">
                         <label for="photo" class="form-control-label">Foto perfil</label>
-                        <input id="photo" name="photo" class="form-control" type="file" required disabled>
+                        <input id="photo" name="photo" class="form-control" type="file" requiered {% comment %} disabled {% endcomment %}>
                       </div>
                     </div>
-                  </div>
+                    <div class="card-header pb-0">
+                        <div class="d-flex justify-content-end mb-2">
+                          <div class="col-md-2">
+                            <button class="btn btn-success" type="submit" {% comment %} href="{% url 'save' profile.id %}" {% endcomment %}>Guardar Cambios</button>
+                          </div>
+                          <div class="col-md-2">
+                            <a class="btn btn-danger" type="button" href="{% url 'cancel' %}">Cancelar</a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   <hr class="horizontal dark">
                   <p class="text-uppercase text-sm">Contact Information</p>
                   <div class="row">
