@@ -2,11 +2,16 @@ from django.shortcuts import render
 from .models import Tasks
 from django.db.models import Q
 from django.core.paginator import Paginator
+from django.contrib.auth.decorators import login_required
 
+
+@login_required
 def tasks(request):
     
-    print(request.user)
-    task = Tasks.objects.all().order_by('estatus')
+    print(request.user.id)
+    id_user= request.user.id
+    print(id_user)
+    task = Tasks.objects.filter(profile_id = id_user).order_by('-estatus')
     
     search_query = request.GET.get('filter', '')
     if search_query: 
